@@ -21,10 +21,23 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: 500
     }, 
-    // stocks: {
-    //     type: [stockSchema],
-    //     default: undefined
-    // }
+    stocks: {
+        type: [{
+            companyName: {
+                type: String,
+                required: true
+            },
+            symbol: {
+                type: String, 
+                required: true
+            },
+            value: {
+                type: Number,
+                required: true
+            }
+        }],
+        default: undefined
+    }
 });
 
 const User = mongoose.model('user', userSchema);
