@@ -121,46 +121,12 @@ exports.addStock = async (req, res) => {
     console.log("Request recieved by addStock.");
     try {
   
-      // get stocks 
       const stocks = req.user.stocks
-      console.log("stocks : ");
-      console.log( JSON.parse(JSON.stringify(stocks)));
       const newStock = req.body.addStock
-      console.log("newStock : ")
-      console.log(newStock.stock)
-      console.log("quantity : ")
-      console.log(newStock.quantity)
-  
+
       let result
       // 1. if the new stock is in stocks increase the quantity 
-      if (stocks.some( x => JSON.parse(x).stock === newStock.stock)) { 
-  
-        const stocks = req.user.stocks
-        console.log("Found user : ")
-        const parsedStocks = stocks.map( x => JSON.parse(x))[0]
-        const currQuantity = parsedStocks.quantity
-        console.log(currQuantity)
-        const newQuantity = currQuantity + newStock.quantity
-        console.log(newQuantity)
-  
-        // find user 
-        const x = req.user.stocks
-        // get stocks 
-  
-        console.log(x)
-  
-        // convert to object
-        const y = x.map( el => JSON.parse(el))
-        console.log(y)
-        // update stocks
-        const z = y.find( el => el.stock === newStock.stock )
-        console.log(z)
-        z.quantity = z.quantity + newStock.quantity
-        const k = y.map( el => el.stock === newStock.stock ?[ JSON.stringify(z)] : [JSON.stringify(el)] )
-        console.log(k)
-        result = await User.updateOne({ username: req.user.username }, { stocks: k })
-  
-        // result = await User.updateOne({ username: req.user.username }, { stocks: k })
+      if (stocks.some( x => JSON.parse(x).stock === req.body.addStock.stock)) { 
   
         const user = req.user.stocks
         const userStocks = user.map( el => JSON.parse(el))
@@ -169,13 +135,16 @@ exports.addStock = async (req, res) => {
         const updatedStocks = userStocks.map( el => el.stock === newStock.stock ? [ JSON.stringify(userStock)] : [JSON.stringify(el)] )
   
         result = await User.updateOne({ username: req.user.username }, { stocks: updatedStocks })
-  
+        console.log(result)
+        console.log(userStocks)
+
   
        } else { 
         // 2. otherwise add the stock to stocks
         console.log("Adding new stock");
         result = await User.updateOne({ username: req.user.username }, { $addToSet: { stocks : [JSON.stringify(req.body.addStock)] } })
         console.log(result);
+        console.log(userStocks)
        }
   
   
