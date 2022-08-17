@@ -7,10 +7,14 @@ exports.hashPass = async(req, res, next) => {
         if(req.body.newPass){
             req.body.newPass = await bcrypt.hash(req.body.newPass, 8);
         };
-        req.body.pass = await bcrypt.hash(req.body.pass, 8);
-        next();
+        if(req.body.pass){
+            req.body.pass = await bcrypt.hash(req.body.pass, 8);
+            next();
+        } else {
+            throw new Error('Missing password')
+        }
     } catch (error) {
-        res.send({ err: `Error at hashPass: ${error} `})
+        res.status(500).send({ err: `Error at hashPass: ${error.message} `})
     };
 };
 
@@ -23,16 +27,21 @@ exports.checkPass = async(req, res, next) => {
             throw new Error('Incorrect credentials.');
         };
     } catch (error) {
-        res.send({msg: `Error at checkPass: ${error}`, user: req.user});
+        res.status(500).send({msg: `Error at checkPass: ${error.message}`});
     };
 };
 
 exports.checkToken = async (req, res, next) => {
     try {
-        const decodedToken = await jwt.verify(req.header('Authorization'), process.env.SECRET)
-        req.user = await User.findById(decodedToken._id)
-        next()
+        if(req.header('Authorization')){
+            const decodedToken = await jwt.verify(req.header('Authorization'), process.env.SECRET)
+            req.user = await User.findById(decodedToken._id)
+            if(req.user)
+            next()
+        } else {
+            throw new Error('Missing Token.')
+        };
     } catch (error) {
-        res.send({err: error})
+        res.status(500).send({err: error.message})
     };
 };
