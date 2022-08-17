@@ -36,8 +36,11 @@ exports.checkToken = async (req, res, next) => {
         if(req.header('Authorization')){
             const decodedToken = await jwt.verify(req.header('Authorization'), process.env.SECRET)
             req.user = await User.findById(decodedToken._id)
-            if(req.user)
-            next()
+            if(req.user){
+                next()
+            } else {
+                throw new Error('Invalid token.')
+            }
         } else {
             throw new Error('Missing Token.')
         };
