@@ -27,7 +27,7 @@ exports.checkPass = async(req, res, next) => {
             throw new Error('Incorrect credentials.');
         };
     } catch (error) {
-        res.status(500).send({msg: `Error at checkPass: ${error.message}`});
+        res.status(500).send({err: `Error at checkPass: ${error.message}`});
     };
 };
 

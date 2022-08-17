@@ -82,6 +82,6 @@ exports.deleteUser = async (req, res) => {
         await User.deleteOne({username: req.user.username})
         res.status(200).send({msg: `Delete successful: ${req.user.username}`, deleted: true})
     } catch (error) {
-        res.status(500).send(`Error at deleteUser: ${error}`)
+        res.status(500).send({err: `Error at deleteUser: ${error.message}`})
     };
 };
