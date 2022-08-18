@@ -11,9 +11,7 @@ userRouter.patch('/update-email', checkPass, updateEmail);
 userRouter.patch('/update-pass', checkPass, hashPass, updatePassword);
 userRouter.patch('/update-user', checkPass, updateUsername);
 userRouter.patch('/update-cash', checkToken, updateCash);
-
-// stock routes
-userRouter.post("/user/add", checkToken, addStock)
+userRouter.patch("/user/stocks", checkToken, addStock)
 
 
 module.exports = userRouter;
