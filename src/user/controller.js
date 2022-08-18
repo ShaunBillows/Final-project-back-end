@@ -19,7 +19,12 @@ exports.login = async (req, res) => {
     try {
         const user = await User.findOne({username: req.user.username});
         const token = await jwt.sign({_id:user._id}, process.env.SECRET)
-        res.status(200).send({msg: `You have logged in successfully. Welcome, ${user.username}.`, token: token})
+        res.status(200).send({
+            msg: `You have logged in successfully. Welcome, ${user.username}.`, 
+            user: user.username,
+            email: user.email,
+            stocks: user.stocks,
+            token: token})
     } catch (error) {
         res.status(500).send({err: `Error at login: ${error.message}`});
     };
