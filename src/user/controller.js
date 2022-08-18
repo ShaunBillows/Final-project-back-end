@@ -21,7 +21,7 @@ exports.login = async (req, res) => {
         const token = await jwt.sign({_id:user._id}, process.env.SECRET)
         res.status(200).send({
             msg: `You have logged in successfully. Welcome, ${user.username}.`, 
-            user: user.username,
+            username: user.username,
             email: user.email,
             stocks: user.stocks,
             token: token})
@@ -95,7 +95,6 @@ exports.addStock = async (req, res) => {
     try {
         if(req.body.addStock){
             if(req.body.addStock.name && req.body.addStock.symbol && req.body.addStock.number){
-                console.log(typeof(req.body.addStock.number))
                 if(typeof(req.body.addStock.number) != 'number'){
                     throw new Error('number value of addStock must be a Number.')
                 }
