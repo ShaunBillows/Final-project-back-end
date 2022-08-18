@@ -8,6 +8,6 @@ app.use(express.json());
 app.use(cors())
 app.use(userRouter);
 
-app.listen(5001, ()=>{
+app.listen(process.env.PORT || 5000, ()=>{
     console.log('listening on port 5001')
 })
