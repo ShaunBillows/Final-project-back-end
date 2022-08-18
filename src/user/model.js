@@ -1,4 +1,3 @@
-const stockSchema = require('../stock/model');
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -22,19 +21,12 @@ const userSchema = new mongoose.Schema({
         default: 500
     }, 
     stocks: {
-        type: [{
-            name: {
-                type: String,
-                required: true,
-            },
-            symbol: {
-                type: String,
-                required: true
-            },
-            number: {
-                type: Number
-            }
-        }]
+        type: Array,
+        default: []
+    },
+    history: {
+        type: Array,
+        default: []
     }
 });
 

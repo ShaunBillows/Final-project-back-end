@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const userRouter = Router();
-const { createUser, deleteUser, login, updateEmail, updatePassword, updateUsername, updateCash, addStock } = require('./controller');
+const { createUser, deleteUser, login, updateEmail, updatePassword, updateUsername, updateCash, addStock, addHistory } = require('./controller');
 const { hashPass, checkPass, checkToken } = require('../middleware');
 
 userRouter.post('/user', hashPass, createUser);
@@ -12,6 +12,6 @@ userRouter.patch('/update-pass', checkPass, hashPass, updatePassword);
 userRouter.patch('/update-user', checkPass, updateUsername);
 userRouter.patch('/update-cash', checkToken, updateCash);
 userRouter.patch("/user/stocks", checkToken, addStock)
-
+userRouter.patch('/user/history', checkToken, addHistory)
 
 module.exports = userRouter;

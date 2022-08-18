@@ -24,6 +24,7 @@ exports.login = async (req, res) => {
             username: user.username,
             email: user.email,
             stocks: user.stocks,
+            history: user.history,
             token: token})
     } catch (error) {
         res.status(500).send({err: `Error at login: ${error.message}`});
@@ -124,3 +125,33 @@ exports.addStock = async (req, res) => {
     }
 }
 
+exports.addHistory = async(req, res)=> {
+    try {
+        if(req.body.entry){
+            const entry = req.body.entry;
+            if(!entry.symbol || !entry.number || !entry.value || !entry.buying){
+                throw new Error('Missing Data.')
+            }
+            const history = req.user.history;
+            console.log(history)
+            const newEntry = {
+                date: `${new Date().getDate()}/${new Date().getMonth()+1}`,
+                stock: {
+                    symbol: entry.symbol,
+                    number: entry.number,
+                    value: entry.value, // Price per unit
+                    buying: entry.buying //If True: Buying. If False: selling.
+                },
+                totalCost: entry.value * entry.number
+            }
+            history.push(newEntry)
+            await User.updateOne({username: req.user.username}, {$set: {history: history}})
+            res.status(200).send({msg:`History entry successfully added.`, entry: newEntry })
+        } else {
+            throw new Error('Missing Entry.')
+        }
+    } catch (error) {
+        res.status(500).send({err: `Error at addHistory: ${error.message}`})
+        console.log(error)
+    }
+}
