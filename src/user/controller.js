@@ -87,39 +87,35 @@ exports.deleteUser = async (req, res) => {
 };
 
 exports.addStock = async (req, res) => {
+    // adds stocks to the user
     console.log("Request recieved by addStock.");
     try {
-  
-      const stocks = req.user.stocks
-      const newStock = req.body.addStock
-
       let result
-      // 1. if the new stock is in stocks increase the quantity 
-      if (stocks.some( x => JSON.parse(x).stock === req.body.addStock.stock)) { 
-  
-        const user = req.user.stocks
-        const userStocks = user.map( el => JSON.parse(el))
-        const userStock = userStocks.find( el => el.stock === newStock.stock )
-        userStock.quantity = userStock.quantity + newStock.quantity
-        const updatedStocks = userStocks.map( el => el.stock === newStock.stock ? [ JSON.stringify(userStock)] : [JSON.stringify(el)] )
-  
+      if (req.user.stocks.some( x => JSON.parse(x).symbol === req.body.addStock.symbol )) { 
+        // 1. if the new stock is in stocks, increment/decrement the quantity 
+        console.log("Updating stocks.");
+        const newStock = req.body.addStock
+        const userStocks = req.user.stocks.map( el => JSON.parse(el))
+        const updateStock = userStocks.find( el => el.symbol === newStock.symbol )
+        updateStock.quantity = updateStock.quantity + newStock.quantity // update the quantity
+        const updatedStocks = userStocks.map( el => el.symbol === newStock.symbol ? [ JSON.stringify(updateStock)] : [JSON.stringify(el)] )
         result = await User.updateOne({ username: req.user.username }, { stocks: updatedStocks })
         console.log(result)
         console.log(userStocks)
-  
        } else { 
-        // 2. otherwise add the stock to stocks
-        console.log("Adding new stock");
+        // 2. otherwise push the new stock to stocks
+        console.log("Adding new stock.");
         result = await User.updateOne({ username: req.user.username }, { $addToSet: { stocks : [JSON.stringify(req.body.addStock)] } })
         console.log(result);
-        console.log(userStocks)
        }
        if (!result) {
-           throw new Error("No user found.")
-       } 
-    res.status(200).send({ msg: "Request processed.", result });
+          throw new Error("Error adding stocks.")
+       } else {
+          res.status(200).send({ msg: "Request processed.", result });
+       }
     } catch (error) {
       console.log(error);
       res.status(500).send({ err: error.message });
     }
   }
+  
