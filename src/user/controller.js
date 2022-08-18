@@ -93,23 +93,35 @@ exports.deleteUser = async (req, res) => {
 
 exports.addStock = async (req, res) => {
     try {
-        const stocks = req.user.stocks
-        const newStock = req.body.addStock
-        // 1. if the new stock is in stocks increase the quantity 
-        if (stocks.some( x => x.name === req.body.addStock.name)) {
-            const userStocks = req.user.stocks
-            const userStock = userStocks.find( el => el.name === newStock.name )
-            userStock.number = userStock.number + newStock.number
-            const updatedStocks = userStocks.map( el => el.name === newStock.name ? userStock : el )
-            result = await User.updateOne({ username: req.user.username }, { stocks: updatedStocks })
-        } else { 
-        // 2. otherwise add the stock to stocks
-        result = await User.updateOne({ username: req.user.username }, { $addToSet: { stocks : [req.body.addStock] } })
+        if(req.body.addStock){
+            if(req.body.addStock.name && req.body.addStock.symbol && req.body.addStock.number){
+                console.log(typeof(req.body.addStock.number))
+                if(typeof(req.body.addStock.number) != 'number'){
+                    throw new Error('number value of addStock must be a Number.')
+                }
+                const stocks = req.user.stocks
+                const newStock = req.body.addStock
+                // 1. if the new stock is in stocks increase the quantity 
+                if (stocks.some( x => x.name === req.body.addStock.name)) {
+                    const userStocks = req.user.stocks
+                    const userStock = userStocks.find( el => el.name === newStock.name )
+                    userStock.number = userStock.number + newStock.number
+                    const updatedStocks = userStocks.map( el => el.name === newStock.name ? userStock : el )
+                    result = await User.updateOne({ username: req.user.username }, { stocks: updatedStocks })
+                } else { 
+                // 2. otherwise add the stock to stocks
+                result = await User.updateOne({ username: req.user.username }, { $addToSet: { stocks : [req.body.addStock] } })
+                }
+                res.status(200).send({ msg: "Request processed." , result: result});
+            } else {
+                throw new Error('Missing value/s: Need name, symbol & number.')
+            }
+        } else {
+            throw new Error('Missing addStock value.')
         }
-        res.status(200).send({ msg: "Request processed." , result: result});
     } catch (error) {
         console.log(error);
-        res.status(500).send({ err: error.message });
+        res.status(500).send({ err: `Error at AddStock: ${error.message}`});
     }
 }
 
