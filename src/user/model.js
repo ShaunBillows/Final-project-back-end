@@ -20,14 +20,8 @@ const userSchema = new mongoose.Schema({
         required: true,
         default: 500
     }, 
-    stocks: {
-        type: Array,
-        default: []
-    },
-    history: {
-        type: Array,
-        default: []
-    }
+    stocks: [],
+    history: []
 });
 
 const User = mongoose.model('user', userSchema);
