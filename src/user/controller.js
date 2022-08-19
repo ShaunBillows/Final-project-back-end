@@ -104,8 +104,8 @@ exports.deleteUser = async (req, res) => {
 
 exports.addStock = async (req, res) => {
     try {
+        const user = req.user;
         if(req.body.addStock){
-            
             if(req.body.addStock.name && req.body.addStock.symbol && req.body.addStock.number){
                 if(typeof(req.body.addStock.number) != 'number'){
                     throw new Error('number value of addStock must be a Number.')
@@ -118,21 +118,16 @@ exports.addStock = async (req, res) => {
                     const userStock = userStocks.find( el => el.name === newStock.name )
                     userStock.number = userStock.number + newStock.number
                     const updatedStocks = userStocks.map( el => el.name === newStock.name ? userStock : el )
-                    result = await User.updateOne({ username: req.user.username }, { stocks: updatedStocks })
+                    await User.updateOne({ username: req.user.username }, { stocks: updatedStocks })
+                    user.stocks = updatedStocks;
                 } else { 
                 // 2. otherwise add the stock to stocks
-                result = await User.updateOne({ username: req.user.username }, { $addToSet: { stocks : [req.body.addStock] } })
+                await User.updateOne({ username: req.user.username }, { $addToSet: { stocks : req.body.addStock } })
+                user.stocks.push(req.body.addStock)
                 }
                 res.status(200).send({ 
-                    msg: "Request processed." , 
-                    result: result, 
-                    user: {
-                        username: req.user.username,
-                        email: req.user.email,
-                        cash: req.user.cash,
-                        stocks: updatedStocks,
-                        history: req.user.history
-                    }
+                    msg: "Request processed.",
+                    user: user
                 });
             } else {
                 throw new Error('Missing value/s: Need name, symbol & number.')
