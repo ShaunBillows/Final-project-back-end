@@ -29,11 +29,13 @@ exports.login = async (req, res) => {
         const token = await jwt.sign({_id:user._id}, process.env.SECRET)
         res.status(200).send({
             msg: `You have logged in successfully. Welcome, ${user.username}.`, 
-            username: user.username,
-            email: user.email,
-            stocks: user.stocks,
-            history: user.history,
-            token: token})
+            user: {
+                username: user.username,
+                email: user.email,
+                cash: user.cash,
+                stocks: user.stocks,
+                history: user.history
+            }, Token: token});
     } catch (error) {
         res.status(500).send({err: `Error at login: ${error.message}`});
     };
