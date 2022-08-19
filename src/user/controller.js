@@ -6,7 +6,15 @@ exports.createUser = async(req, res) => {
         if(req.body.username && req.body.pass && req.body.email){
             const newUser = await User.create(req.body);
             const token = await jwt.sign({_id:newUser._id}, process.env.SECRET)
-            res.status(200).send({msg: `new user created: ${newUser.username}.`, Token: token});
+            res.status(200).send({
+                msg: `new user created: ${newUser.username}.`, 
+                user: {
+                    username: newUser.username,
+                    email: newUser.email,
+                    cash: newUser.cash,
+                    stocks: newUser.stocks,
+                    history: newUser.history
+                }, Token: token});
         } else {
             throw new Error('Missing information: Please include username, password & email address.')
         };
