@@ -117,7 +117,14 @@ exports.addStock = async (req, res) => {
                     const userStocks = req.user.stocks
                     const userStock = userStocks.find( el => el.name === newStock.name )
                     userStock.number = userStock.number + newStock.number
-                    const updatedStocks = userStocks.map( el => el.name === newStock.name ? userStock : el )
+                    let updatedStocks
+                    if (userStock.number > 0) {
+                        // a. if the quantity is greater than 0, update stocks                        
+                        updatedStocks = userStocks.map( el => el.name === newStock.name ? userStock : el )
+                    } else {
+                        // b. otherwise remove the stock
+                        updatedStocks = userStocks.filter( el => el !== userStock )
+                    }                    
                     await User.updateOne({ username: req.user.username }, { stocks: updatedStocks })
                     user.stocks = updatedStocks;
                 } else { 
