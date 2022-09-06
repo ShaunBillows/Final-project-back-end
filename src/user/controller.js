@@ -150,8 +150,8 @@ exports.addHistory = async(req, res)=> {
         const d = new Date()
         const transaction = {
             symbol: req.body.symbol,
-            price: to2dp(req.body.number),
-            quantity: to2dp(req.body.price),
+            price: to2dp(req.body.price),
+            quantity: to2dp(req.body.number),
             total: to2dp(req.body.number * req.body.price),
             buy: req.body.buy,
             timeStamp: `${d.getHours()}:${d.getMinutes()} ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`,
