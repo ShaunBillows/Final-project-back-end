@@ -1,4 +1,3 @@
-
 const User = require('./model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require("bcryptjs");
@@ -157,7 +156,7 @@ exports.addHistory = async(req, res)=> {
             buy: req.body.buy,
             timeStamp: `${d.getHours()}:${d.getMinutes()} ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`,
         }
-        const result = await User.updateOne({username: req.user.username}, {$addToSet: {history: transaction}})
+        const result = await User.updateOne({username: req.user.username}, {$push: {history: transaction}})
         if (!result) {
             throw new Error("Unable to append transaction.")
         }
