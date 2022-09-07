@@ -42,7 +42,6 @@ exports.login = async (req, res) => {
                 stocks: user.stocks,
                 history: user.history
             }, Token: token});
-        console.log(user);
     } catch (error) {
         res.status(500).send({err: `Error at login: ${error.message}`});
     };
@@ -144,7 +143,7 @@ exports.addStock = async (req, res) => {
 
 exports.addHistory = async(req, res)=> {
     try {
-        if(!req.body.symbol || !req.body.number || !req.body.price || !req.body.buy){
+        if(!req.body.symbol || !req.body.number || !req.body.price || typeof req.body.buy !== "boolean"){
             throw new Error('Missing field/s.')
         }
         const d = new Date()
