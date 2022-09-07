@@ -154,7 +154,7 @@ exports.addHistory = async(req, res)=> {
             quantity: to2dp(req.body.number),
             total: to2dp(req.body.number * req.body.price),
             buy: req.body.buy,
-            timeStamp: `${d.getHours()}:${d.getMinutes()} ${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()}`,
+            timeStamp: `${d.getDate()}/${d.getMonth()+1}/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`,
         }
         const result = await User.updateOne({username: req.user.username}, {$push: {history: transaction}})
         if (!result) {
