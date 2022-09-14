@@ -265,13 +265,14 @@ exports.addHistory = async (req, res) => {
     // ) {
     //   throw new Error("Missing field/s.");
     // }
+    console.log(req.body.addStock.number > 0 ? "Buy" : "Sell")
     const d = new Date();
     const transaction = {
       symbol: req.body.addStock.name,
       price: to2dp(req.body.addStock.price),
       quantity: to2dp(Math.abs(req.body.addStock.number)),
       total: to2dp(Math.abs(req.body.addStock.number) * req.body.addStock.price),
-      buy: req.body.addStock.number > 0 ? "Buy" : "Sell",
+      buy: req.body.addStock.number > 0 ? true : false,
       timeStamp: `${d.getDate()}/${
         d.getMonth() + 1
       }/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}:${d.getSeconds()}`,
