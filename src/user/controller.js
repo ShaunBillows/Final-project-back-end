@@ -144,19 +144,19 @@ exports.addStock = async (req, res, next) => {
         { $addToSet: { stocks: req.body.addStock } }
       );
     } else {
-      // 1i. if the user owns the stock, update the quantity
+      // 2. if the user owns the stock, update the quantity
       const userStock = req.user.stocks.find((el) => el.name === newStock.name);
       userStock.number = to2dp(
         to2dp(userStock.number) + to2dp(newStock.number)
       );
       let updatedStocks;
       if (userStock.number > 0) {
-        // 1ii. if the quantity is greater than 0, update their stocks
+        // 2i. if the quantity is greater than 0, update their stocks
         updatedStocks = req.user.stocks.map((el) =>
           el.name === newStock.name ? userStock : el
         );
       } else {
-        // 2. otherwise delete the stock
+        // 2ii. otherwise delete the stock
         updatedStocks = req.user.stocks.filter((el) => el !== userStock);
       }
       req.user.stocks = updatedStocks;
